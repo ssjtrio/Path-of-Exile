@@ -221,7 +221,7 @@
 <div id="banner" class="banner">🔥 GOD ROLL 🔥</div>
 
 <script>
-const skills=["Fireball","Ice Nova","Lightning Arrow","Cyclone","Toxic Rain","Blade Vortex","Spark","Frost Blades","Ground Slam","Holy Strike","Molten Strike","Holy Flame Totem","Righteous Fire","Winter Orb","Spectral Shield Throw","Venom Gyre","Ice Trap","Ice Shot","Kinetic Fusillade"];
+const skills=["Fireball","Ice Nova","Lightning Arrow","Cyclone","Toxic Rain","Blade Vortex","Spark","Frost Blades","Ground Slam","Holy Strike","Molten Strike","Holy Flame Totem","Righteous Fire","Winter Orb","Spectral Shield Throw","Venom Gyre","Ice Trap","Ice Shot","Kinetic Fusillade","Split Arrow"];
 const ascendancies=["Necromancer","Elementalist","Occultist","Slayer","Champion","Gladiator","Deadeye","Pathfinder","Warden","Chieftain","Juggernaut","Berserker","Guardian","Hierophant","Inquistitor","Ascendant","Reliquarian"];
 
 const smartMap={
@@ -234,7 +234,8 @@ const smartMap={
   "Frost Blades":["Warden","Deadeye"],
   "Righteous Fire":["Chieftain","Elemenatlist"],
   "Holy Flame Totem":["Chieftain","Hierophant"],
-  "Kinetic Fusillade" :["Hierophant","Deadeye","Warden"],
+  "Kinetic Fusillade":["Hierophant","Deadeye","Warden"],
+  "Split Arrow":["Gladiator","Reliquarian"],
   "Ground Slam":["Juggernaut","Slayer"]
 };
 
@@ -244,13 +245,15 @@ const bloodlines={
   Deadeye:["Windrunner"],
   Pathfinder:["Toxicologist"],
   Inquisitor:["Judicator"],
+  Gladiator:["Bitter Lash"],
   Warden:["Frenzied","Phasing"]
 };
 
 const bias={
   Cryogenesis:["Spark"],
-  FJudicator:["Fireball"],
+  Judicator:["Fireball"],
   Overleech:["Cyclone"],
+  "Bitter Lash":["Split Arrow"],
   Toxicologist:["Toxic Rain"]
 };
 
