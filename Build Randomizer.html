@@ -1,77 +1,322 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>PoE Build Randomizer</title>
+  <title>Build Randomizer</title>
+
   <style>
     body {
-      font-family: Arial;
-      text-align: center;
-      background: #111;
+      margin: 0;
+      font-family: "Segoe UI", sans-serif;
+      background: radial-gradient(circle at center, #0d0d0d, #050505);
       color: #eee;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
     }
-    h1 { margin-top: 40px; }
-    .box {
-      margin: 20px auto;
-      padding: 20px;
-      width: 300px;
-      border: 1px solid #444;
-      border-radius: 10px;
-      background: #1a1a1a;
+
+    .panel {
+      width: 380px;
+      padding: 30px;
+      border-radius: 20px;
+      background: linear-gradient(145deg, #111, #0a0a0a);
+      box-shadow: 
+        0 0 30px rgba(255,140,0,0.15),
+        inset 0 0 20px rgba(255,140,0,0.05);
+      text-align: center;
+      position: relative;
     }
-    .label { font-size: 14px; color: #aaa; }
-    .value { font-size: 22px; margin-top: 5px; }
-    button {
+
+    .title {
+      font-size: 26px;
+      margin-bottom: 25px;
+      letter-spacing: 1px;
+      color: #ff9800;
+      text-shadow: 0 0 10px rgba(255,152,0,0.6);
+    }
+
+    .slot {
+      margin: 15px 0;
+      padding: 15px;
+      border-radius: 12px;
+      background: #141414;
+      box-shadow: inset 0 0 10px rgba(255,152,0,0.08);
+    }
+
+    .label {
+      font-size: 12px;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .value {
+      font-size: 22px;
+      margin-top: 5px;
+      font-weight: bold;
+      color: #ff9800;
+      text-shadow: 0 0 8px rgba(255,152,0,0.5);
+    }
+
+    .roll-btn {
       margin-top: 20px;
-      padding: 10px 20px;
-      font-size: 16px;
-      background: #ff9800;
+      padding: 14px;
+      width: 100%;
+      border-radius: 10px;
       border: none;
-      border-radius: 5px;
+      font-size: 16px;
+      font-weight: bold;
+      background: linear-gradient(135deg, #ff9800, #ff5722);
+      color: white;
       cursor: pointer;
+      transition: 0.2s;
     }
-    button:hover { background: #e68900; }
+
+    .roll-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px rgba(255,100,0,0.6);
+    }
+
+    /* MODE SWITCH */
+    .mode-bar {
+      margin-top: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      color: #aaa;
+    }
+
+    .switch {
+      position: relative;
+      width: 50px;
+      height: 26px;
+    }
+
+    .switch input {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+      z-index: 2;
+    }
+
+    .slider {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: #333;
+      border-radius: 30px;
+    }
+
+    .slider:before {
+      content: "";
+      position: absolute;
+      height: 18px;
+      width: 18px;
+      left: 4px;
+      bottom: 4px;
+      background: white;
+      border-radius: 50%;
+      transition: 0.3s;
+    }
+
+    input:checked + .slider {
+      background: #ff9800;
+      box-shadow: 0 0 10px #ff9800;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(24px);
+    }
+
+    .mode-status {
+      margin-top: 8px;
+      font-size: 12px;
+      color: #ff9800;
+    }
+
+    /* GOD ROLL */
+    .god-roll {
+      animation: glow 1s infinite alternate;
+    }
+
+    @keyframes glow {
+      from { box-shadow: 0 0 10px gold; }
+      to { box-shadow: 0 0 40px gold; }
+    }
+
+    .banner {
+      position: fixed;
+      top: 40%;
+      width: 100%;
+      text-align: center;
+      font-size: 48px;
+      color: gold;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .banner.show {
+      animation: pop 1s ease forwards;
+    }
+
+    @keyframes pop {
+      0% { opacity: 0; transform: scale(0.5); }
+      50% { opacity: 1; transform: scale(1.4); }
+      100% { opacity: 0; transform: scale(1); }
+    }
+
+    .shake {
+      animation: shake 0.4s;
+    }
+
+    @keyframes shake {
+      0% { transform: translate(0); }
+      50% { transform: translate(6px, -6px); }
+      100% { transform: translate(0); }
+    }
+
   </style>
 </head>
+
 <body>
 
-  <h1>Build Randomizer</h1>
+<div class="panel">
 
-  <div class="box">
+  <div class="title">⚔️ BUILD RANDOMIZER</div>
+
+  <div class="slot">
     <div class="label">Skill</div>
     <div id="skill" class="value">-</div>
   </div>
 
-  <div class="box">
+  <div class="slot">
     <div class="label">Ascendancy</div>
     <div id="ascendancy" class="value">-</div>
   </div>
 
-  <button onclick="randomize()">Roll Build</button>
+  <div class="slot">
+    <div class="label">Bloodline</div>
+    <div id="bloodline" class="value">-</div>
+  </div>
 
-  <script>
-    const skills = [
-      "Fireball", "Ice Nova", "Lightning Arrow",
-      "Cyclone", "Toxic Rain", "Blade Vortex",
-      "Spark", "Frost Blades"
-    ];
+  <button class="roll-btn" onclick="randomize()">🎲 ROLL BUILD</button>
 
-    const ascendancies = [
-      "Necromancer", "Elementalist", "Occultist",
-      "Slayer", "Champion", "Deadeye",
-      "Pathfinder", "Inquisitor"
-    ];
+  <div class="mode-bar">
+    <span>CHAOS</span>
 
-    function pickRandom(arr) {
-      return arr[Math.floor(Math.random() * arr.length)];
+    <label class="switch">
+      <input type="checkbox" id="smartToggle" onchange="updateMode()">
+      <span class="slider"></span>
+    </label>
+
+    <span>SMART</span>
+  </div>
+
+  <div id="modeStatus" class="mode-status">Mode: Chaos</div>
+
+</div>
+
+<div id="banner" class="banner">🔥 GOD ROLL 🔥</div>
+
+<script>
+const skills=["Fireball","Ice Nova","Lightning Arrow","Cyclone","Toxic Rain","Blade Vortex","Spark","Frost Blades"];
+const ascendancies=["Necromancer","Elementalist","Occultist","Slayer","Champion","Deadeye","Pathfinder","Inquisitor","Warden"];
+
+const smartMap={
+  Fireball:["Elementalist","Inquisitor"],
+  "Ice Nova":["Elementalist","Occultist"],
+  "Lightning Arrow":["Deadeye"],
+  Cyclone:["Slayer","Champion"],
+  "Toxic Rain":["Pathfinder"],
+  Spark:["Inquisitor"],
+  "Frost Blades":["Warden","Deadeye"]
+};
+
+const bloodlines={
+  Elementalist:["Flameborn","Stormweaver"],
+  Slayer:["Overleech"],
+  Deadeye:["Windrunner"],
+  Pathfinder:["Toxicologist"],
+  Inquisitor:["Judicator"],
+  Warden:["Frenzied","Phasing"]
+};
+
+const bias={
+  Stormweaver:["Spark"],
+  Flameborn:["Fireball"],
+  Windrunner:["Lightning Arrow"],
+  Overleech:["Cyclone"],
+  Toxicologist:["Toxic Rain"]
+};
+
+function pick(a){return a[Math.floor(Math.random()*a.length)];}
+
+function pickSkill(b){
+  if(bias[b] && Math.random()<0.7) return pick(bias[b]);
+  return pick(skills);
+}
+
+function animate(id,arr){
+  let i=setInterval(()=>{document.getElementById(id).innerText=pick(arr)},60);
+  setTimeout(()=>clearInterval(i),500);
+}
+
+function updateMode(){
+  const on=document.getElementById("smartToggle").checked;
+  document.getElementById("modeStatus").innerText= on ? "Mode: Smart (Viable Builds)" : "Mode: Chaos";
+}
+
+function randomize(){
+  let asc=pick(ascendancies);
+  let blood=bloodlines[asc]?pick(bloodlines[asc]):"None";
+  let skill=pickSkill(blood);
+
+  if(document.getElementById("smartToggle").checked){
+    if(smartMap[skill] && !smartMap[skill].includes(asc)){
+      asc=pick(smartMap[skill]);
+      blood=bloodlines[asc]?pick(bloodlines[asc]):"None";
     }
+  }
 
-    function randomize() {
-      document.getElementById("skill").innerText = pickRandom(skills);
-      document.getElementById("ascendancy").innerText = pickRandom(ascendancies);
-    }
+  animate("skill",skills);
+  animate("ascendancy",ascendancies);
+  animate("bloodline",["???"]);
 
-    randomize();
-  </script>
+  setTimeout(()=>{
+    document.getElementById("skill").innerText=skill;
+    document.getElementById("ascendancy").innerText=asc;
+    document.getElementById("bloodline").innerText=blood;
+    godRoll(skill,asc,blood);
+  },500);
+}
+
+function godRoll(s,a,b){
+  const combos=[
+    ["Spark","Inquisitor","Judicator"],
+    ["Cyclone","Slayer","Overleech"],
+    ["Toxic Rain","Pathfinder","Toxicologist"],
+    ["Lightning Arrow","Deadeye","Windrunner"]
+  ];
+
+  if(combos.some(x=>x[0]==s&&x[1]==a&&x[2]==b)){
+    document.body.classList.add("god-roll","shake");
+    let banner=document.getElementById("banner");
+    banner.classList.add("show");
+
+    let audio=new Audio("https://www.myinstants.com/media/sounds/vine-boom.mp3");
+    audio.play();
+
+    setTimeout(()=>{
+      document.body.classList.remove("god-roll","shake");
+      banner.classList.remove("show");
+    },1200);
+  }
+}
+
+randomize();
+</script>
 
 </body>
 </html>
