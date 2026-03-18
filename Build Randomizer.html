@@ -221,40 +221,32 @@
 <div id="banner" class="banner">🔥 GOD ROLL 🔥</div>
 
 <script>
-const skills=["Fireball","Ice Nova","Lightning Arrow","Cyclone","Toxic Rain","Blade Vortex","Spark","Frost Blades","Ground Slam","Holy Strike","Molten Strike","Holy Flame Totem","Righteous Fire","Winter Orb","Spectral Shield Throw","Venom Gyre","Ice Trap","Ice Shot","Kinetic Fusillade","Split Arrow"];
+const skills=["Kinetic Fusillade","Kinetic Blast of Clustering","Righteous Fire","Elemental Hit","Shock Nova of Procession"];
 const ascendancies=["Necromancer","Elementalist","Occultist","Slayer","Champion","Gladiator","Deadeye","Pathfinder","Warden","Chieftain","Juggernaut","Berserker","Guardian","Hierophant","Inquistitor","Ascendant","Reliquarian"];
 
 const smartMap={
-  "Fireball":["Elementalist","Inquisitor"],
-  "Ice Nova":["Elementalist","Occultist"],
-  "Lightning Arrow":["Deadeye","Warden"],
-  "Cyclone":["Slayer","Champion","Warden"],
-  "Toxic Rain":["Pathfinder","Occultist"],
-  "Spark":["Inquisitor","Warden"],
-  "Frost Blades":["Warden","Deadeye"],
-  "Righteous Fire":["Chieftain","Elemenatlist"],
-  "Holy Flame Totem":["Chieftain","Hierophant"],
   "Kinetic Fusillade":["Hierophant","Deadeye","Warden"],
-  "Split Arrow":["Gladiator","Reliquarian"],
-  "Ground Slam":["Juggernaut","Slayer"]
+  "Kinetic Blast of Clustering":["Hierophant","Necromancer","Inquistor"],
+  "Righteous Fire":["Chieftain"],
+  "Elemental Hit":["Slayer"],
+  "Shock Nova of Procession":["Hierophant","Inquistor"]
 };
 
 const bloodlines={
-  Elementalist:["Cryogenesis","Flameborn"],
-  Slayer:["Overleech"],
-  Deadeye:["Windrunner"],
-  Pathfinder:["Toxicologist"],
-  Inquisitor:["Judicator"],
-  Gladiator:["Bitter Lash"],
-  Warden:["Frenzied","Phasing"]
+  Elementalist:["Chaos"],
+  Slayer:["Nameless"],
+  Deadeye:["Nameless","Breachlord"],
+  Chieftain:["Breachlord"],
+  Inquisitor:["Chaos"],
+  Gladiator:["Farrul"],
+  Warden:["Nameless"]
 };
 
 const bias={
-  Cryogenesis:["Spark"],
-  Judicator:["Fireball"],
-  Overleech:["Cyclone"],
-  "Bitter Lash":["Split Arrow"],
-  Toxicologist:["Toxic Rain"]
+  "Chaos":["Shock Nova of Procession"],
+  "Nameless":["Elemental Hit"],
+  "Breachlord":["Righteous Fire","Kinetic Fusillade"],
+  "Farrul":["Kinetic Blast of Clustering"]
 };
 
 function pick(a){return a[Math.floor(Math.random()*a.length)];}
