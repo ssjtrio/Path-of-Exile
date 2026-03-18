@@ -1,319 +1,272 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Build Randomizer</title>
+<title>PoE 3.28 Build Randomizer</title>
 
-  <style>
-    body {
-      margin: 0;
-      font-family: "Segoe UI", sans-serif;
-      background: radial-gradient(circle at center, #0d0d0d, #050505);
-      color: #eee;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
+<style>
+body{
+  margin:0;
+  font-family:Segoe UI;
+  background:#0b0b0b;
+  color:#eee;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+}
 
-    .panel {
-      width: 380px;
-      padding: 30px;
-      border-radius: 20px;
-      background: linear-gradient(145deg, #111, #0a0a0a);
-      box-shadow: 
-        0 0 30px rgba(255,140,0,0.15),
-        inset 0 0 20px rgba(255,140,0,0.05);
-      text-align: center;
-      position: relative;
-    }
+/* PANEL */
+.panel{
+  width:420px;
+  padding:30px;
+  border-radius:20px;
+  background:#111;
+  text-align:center;
+  box-shadow:0 0 40px rgba(255,140,0,0.2);
+}
 
-    .title {
-      font-size: 26px;
-      margin-bottom: 25px;
-      letter-spacing: 1px;
-      color: #ff9800;
-      text-shadow: 0 0 10px rgba(255,152,0,0.6);
-    }
+.title{
+  color:#ff9800;
+  font-size:24px;
+  margin-bottom:20px;
+}
 
-    .slot {
-      margin: 15px 0;
-      padding: 15px;
-      border-radius: 12px;
-      background: #141414;
-      box-shadow: inset 0 0 10px rgba(255,152,0,0.08);
-    }
+/* SLOTS */
+.slot{
+  margin:10px 0;
+  padding:14px;
+  background:#141414;
+  border-radius:10px;
+}
 
-    .label {
-      font-size: 12px;
-      color: #888;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
+.value{
+  font-size:18px;
+  color:#ff9800;
+}
 
-    .value {
-      font-size: 22px;
-      margin-top: 5px;
-      font-weight: bold;
-      color: #ff9800;
-      text-shadow: 0 0 8px rgba(255,152,0,0.5);
-    }
+/* BUTTONS */
+button{
+  margin-top:10px;
+  padding:12px;
+  width:100%;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+}
 
-    .roll-btn {
-      margin-top: 20px;
-      padding: 14px;
-      width: 100%;
-      border-radius: 10px;
-      border: none;
-      font-size: 16px;
-      font-weight: bold;
-      background: linear-gradient(135deg, #ff9800, #ff5722);
-      color: white;
-      cursor: pointer;
-      transition: 0.2s;
-    }
+.roll{background:#ff9800;}
+.guide{background:#2196f3;}
 
-    .roll-btn:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 15px rgba(255,100,0,0.6);
-    }
+/* TOGGLE */
+.mode-toggle{
+  position:relative;
+  margin-top:15px;
+  height:40px;
+  display:flex;
+  background:#1a1a1a;
+  border-radius:10px;
+  overflow:hidden;
+}
 
-    /* MODE SWITCH */
-    .mode-bar {
-      margin-top: 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 13px;
-      color: #aaa;
-    }
+.mode-option{
+  flex:1;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  color:#777;
+  cursor:pointer;
+  z-index:2;
+  font-size:13px;
+  letter-spacing:1px;
+}
 
-    .switch {
-      position: relative;
-      width: 50px;
-      height: 26px;
-    }
+.mode-option.active{color:#fff;}
 
-    .switch input {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      opacity: 0;
-      cursor: pointer;
-      z-index: 2;
-    }
+.mode-slider{
+  position:absolute;
+  width:50%;
+  height:100%;
+  background:linear-gradient(135deg,#ff9800,#ff5722);
+  border-radius:10px;
+  transition:.25s;
+}
 
-    .slider {
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: #333;
-      border-radius: 30px;
-    }
+.mode-status{
+  margin-top:6px;
+  font-size:12px;
+  color:#ff9800;
+}
 
-    .slider:before {
-      content: "";
-      position: absolute;
-      height: 18px;
-      width: 18px;
-      left: 4px;
-      bottom: 4px;
-      background: white;
-      border-radius: 50%;
-      transition: 0.3s;
-    }
-
-    input:checked + .slider {
-      background: #ff9800;
-      box-shadow: 0 0 10px #ff9800;
-    }
-
-    input:checked + .slider:before {
-      transform: translateX(24px);
-    }
-
-    .mode-status {
-      margin-top: 8px;
-      font-size: 12px;
-      color: #ff9800;
-    }
-
-    /* GOD ROLL */
-    .god-roll {
-      animation: glow 1s infinite alternate;
-    }
-
-    @keyframes glow {
-      from { box-shadow: 0 0 10px gold; }
-      to { box-shadow: 0 0 40px gold; }
-    }
-
-    .banner {
-      position: fixed;
-      top: 40%;
-      width: 100%;
-      text-align: center;
-      font-size: 48px;
-      color: gold;
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    .banner.show {
-      animation: pop 1s ease forwards;
-    }
-
-    @keyframes pop {
-      0% { opacity: 0; transform: scale(0.5); }
-      50% { opacity: 1; transform: scale(1.4); }
-      100% { opacity: 0; transform: scale(1); }
-    }
-
-    .shake {
-      animation: shake 0.4s;
-    }
-
-    @keyframes shake {
-      0% { transform: translate(0); }
-      50% { transform: translate(6px, -6px); }
-      100% { transform: translate(0); }
-    }
-
-  </style>
+/* SOURCE */
+.source{
+  margin-top:8px;
+  font-size:11px;
+  color:#777;
+}
+</style>
 </head>
 
 <body>
 
 <div class="panel">
 
-  <div class="title">⚔️ BUILD RANDOMIZER</div>
+<div class="title">⚔️ POE 3.28 BUILD RANDOMIZER</div>
 
-  <div class="slot">
-    <div class="label">Skill</div>
-    <div id="skill" class="value">-</div>
-  </div>
+<div class="slot">Skill<div id="skill" class="value"></div></div>
+<div class="slot">Ascendancy<div id="asc" class="value"></div></div>
+<div class="slot">Category<div id="category" class="value"></div></div>
 
-  <div class="slot">
-    <div class="label">Ascendancy</div>
-    <div id="ascendancy" class="value">-</div>
-  </div>
+<button class="roll" onclick="roll()">🎲 Roll Build</button>
+<button class="guide" onclick="openGuide()">📘 Open Guide</button>
 
-  <div class="slot">
-    <div class="label">Bloodline</div>
-    <div id="bloodline" class="value">-</div>
-  </div>
+<div class="mode-toggle">
+  <div class="mode-slider" id="slider"></div>
+  <div class="mode-option active" data-mode="chaos">CHAOS</div>
+  <div class="mode-option" data-mode="smart">SMART</div>
+</div>
 
-  <button class="roll-btn" onclick="randomize()">🎲 ROLL BUILD</button>
-
-  <div class="mode-bar">
-    <span>CHAOS</span>
-
-    <label class="switch">
-      <input type="checkbox" id="smartToggle" onchange="updateMode()">
-      <span class="slider"></span>
-    </label>
-
-    <span>SMART</span>
-  </div>
-
-  <div id="modeStatus" class="mode-status">Mode: Chaos</div>
+<div id="modeStatus" class="mode-status">Mode: Chaos</div>
+<div id="source" class="source"></div>
 
 </div>
 
-<div id="banner" class="banner">🔥 GOD ROLL 🔥</div>
-
 <script>
-const skills=["Kinetic Fusillade","Kinetic Blast of Clustering","Righteous Fire","Elemental Hit","Shock Nova of Procession"];
-const ascendancies=["Necromancer","Elementalist","Occultist","Slayer","Champion","Gladiator","Deadeye","Pathfinder","Warden","Chieftain","Juggernaut","Berserker","Guardian","Hierophant","Inquistitor","Ascendant","Reliquarian"];
 
-const smartMap={
-  "Kinetic Fusillade":["Hierophant","Deadeye","Warden"],
-  "Kinetic Blast of Clustering":["Hierophant","Necromancer","Inquistor"],
-  "Righteous Fire":["Chieftain"],
-  "Elemental Hit":["Slayer"],
-  "Shock Nova of Procession":["Hierophant","Inquistor"]
-};
+// ================= REAL BUILD DATABASE (3.28 STYLE) =================
+const builds = [
 
-const bloodlines={
-  Elementalist:["Chaos"],
-  Slayer:["Nameless"],
-  Deadeye:["Nameless","Breachlord"],
-  Chieftain:["Breachlord"],
-  Inquisitor:["Chaos"],
-  Gladiator:["Farrul"],
-  Warden:["Nameless"]
-};
+  // 🔥 META
+  {
+    skill:"Toxic Rain",
+    asc:"Pathfinder",
+    cat:"DoT",
+    url:"https://www.poe-vault.com/guides/toxic-rain-pathfinder-build-guide"
+  },
+  {
+    skill:"Lightning Arrow",
+    asc:"Deadeye",
+    cat:"Bow",
+    url:"https://mobalytics.gg/poe/builds/lightning-arrow-deadeye"
+  },
+  {
+    skill:"Spark",
+    asc:"Inquisitor",
+    cat:"Spell",
+    url:"https://mobalytics.gg/poe/builds/spark-inquisitor"
+  },
 
-const bias={
-  "Chaos":["Shock Nova of Procession"],
-  "Nameless":["Elemental Hit"],
-  "Breachlord":["Righteous Fire","Kinetic Fusillade"],
-  "Farrul":["Kinetic Blast of Clustering"]
-};
+  // 🧠 STRONG
+  {
+    skill:"Righteous Fire",
+    asc:"Inquisitor",
+    cat:"DoT",
+    url:"https://www.poe-vault.com/guides/righteous-fire-inquisitor-build-guide"
+  },
+  {
+    skill:"Summon Skeletons",
+    asc:"Necromancer",
+    cat:"Minion",
+    url:"https://www.poe-vault.com/guides/skeleton-mage-necromancer-build-guide"
+  },
 
-function pick(a){return a[Math.floor(Math.random()*a.length)];}
+  // ⚔️ MELEE
+  {
+    skill:"Cyclone",
+    asc:"Slayer",
+    cat:"Melee",
+    url:"https://mobalytics.gg/poe/builds/cyclone-slayer"
+  },
+  {
+    skill:"Boneshatter",
+    asc:"Slayer",
+    cat:"Melee",
+    url:"https://mobalytics.gg/poe/builds/boneshatter-slayer"
+  },
 
-function pickSkill(b){
-  if(bias[b] && Math.random()<0.7) return pick(bias[b]);
-  return pick(skills);
-}
+  // 🏹 BOW
+  {
+    skill:"Tornado Shot",
+    asc:"Deadeye",
+    cat:"Bow",
+    url:"https://mobalytics.gg/poe/builds/tornado-shot-deadeye"
+  },
 
-function animate(id,arr){
-  let i=setInterval(()=>{document.getElementById(id).innerText=pick(arr)},60);
-  setTimeout(()=>clearInterval(i),500);
-}
+  // ☠️ DOT
+  {
+    skill:"Essence Drain",
+    asc:"Occultist",
+    cat:"DoT",
+    url:"https://mobalytics.gg/poe/builds/essence-drain-occultist"
+  }
 
-function updateMode(){
-  const on=document.getElementById("smartToggle").checked;
-  document.getElementById("modeStatus").innerText= on ? "Mode: Smart (Viable Builds)" : "Mode: Chaos";
-}
+];
 
-function randomize(){
-  let asc=pick(ascendancies);
-  let blood=bloodlines[asc]?pick(bloodlines[asc]):"None";
-  let skill=pickSkill(blood);
+let current=null;
+let smartMode=false;
 
-  if(document.getElementById("smartToggle").checked){
-    if(smartMap[skill] && !smartMap[skill].includes(asc)){
-      asc=pick(smartMap[skill]);
-      blood=bloodlines[asc]?pick(bloodlines[asc]):"None";
+// ================= TOGGLE =================
+const slider=document.getElementById("slider");
+
+document.querySelectorAll(".mode-option").forEach(o=>{
+  o.onclick=()=>{
+    document.querySelectorAll(".mode-option").forEach(x=>x.classList.remove("active"));
+    o.classList.add("active");
+
+    if(o.dataset.mode==="smart"){
+      smartMode=true;
+      slider.style.left="50%";
+      modeStatus.innerText="Mode: Smart (Meta Builds)";
+    }else{
+      smartMode=false;
+      slider.style.left="0%";
+      modeStatus.innerText="Mode: Chaos";
     }
-  }
+  };
+});
 
-  animate("skill",skills);
-  animate("ascendancy",ascendancies);
-  animate("bloodline",["???"]);
-
-  setTimeout(()=>{
-    document.getElementById("skill").innerText=skill;
-    document.getElementById("ascendancy").innerText=asc;
-    document.getElementById("bloodline").innerText=blood;
-    godRoll(skill,asc,blood);
-  },500);
+// ================= LOGIC =================
+function pick(arr){
+  return arr[Math.floor(Math.random()*arr.length)];
 }
 
-function godRoll(s,a,b){
-  const combos=[
-    ["Spark","Inquisitor","Judicator"],
-    ["Cyclone","Slayer","Overleech"],
-    ["Toxic Rain","Pathfinder","Toxicologist"],
-    ["Lightning Arrow","Deadeye","Windrunner"]
-  ];
+function roll(){
+  let build;
 
-  if(combos.some(x=>x[0]==s&&x[1]==a&&x[2]==b)){
-    document.body.classList.add("god-roll","shake");
-    let banner=document.getElementById("banner");
-    banner.classList.add("show");
+  if(smartMode){
+    build = pick(builds); // real curated builds
+  } else {
+    // chaos = mix skill + ascendancy
+    let skills=[...new Set(builds.map(b=>b.skill))];
+    let asc=[...new Set(builds.map(b=>b.asc))];
 
-    let audio=new Audio("https://www.myinstants.com/media/sounds/vine-boom.mp3");
-    audio.play();
-
-    setTimeout(()=>{
-      document.body.classList.remove("god-roll","shake");
-      banner.classList.remove("show");
-    },1200);
+    build={
+      skill:pick(skills),
+      asc:pick(asc),
+      cat:"Unknown",
+      url:"https://www.google.com/search?q=poe+"+pick(skills)+"+build"
+    };
   }
+
+  current=build;
+
+  skill.innerText=build.skill;
+  asc.innerText=build.asc;
+  category.innerText=build.cat;
+
+  source.innerText = build.url.includes("poe-vault")
+    ? "Source: PoE Vault"
+    : build.url.includes("mobalytics")
+    ? "Source: Mobalytics"
+    : "Source: Generated";
 }
 
-randomize();
+function openGuide(){
+  if(!current) return;
+  window.open(current.url,"_blank");
+}
+
+roll();
+
 </script>
 
 </body>
