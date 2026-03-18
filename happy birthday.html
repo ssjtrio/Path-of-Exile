@@ -125,7 +125,15 @@ h1 {
     <source src="https://raw.githubusercontent.com/ssjtrio/Path-of-Exile/main/hbday.wav" type="audio/wav">
 </audio>
 
-<button onclick="document.getElementById('birthdayAudio').play()">🎵 Play Birthday Song</button>
+<script>
+let audioStarted = false;
+document.body.addEventListener('click', () => {
+    if (!audioStarted) {
+        document.getElementById('birthdayAudio').play();
+        audioStarted = true;
+    }
+});
+</script>
 
 <script>
 const dragonURL = "https://www.transparentpng.com/thumb/dragon/qWQgub-flying-dragon.png";
