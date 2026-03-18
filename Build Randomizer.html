@@ -77,7 +77,6 @@ button{
   cursor:pointer;
   z-index:2;
   font-size:13px;
-  letter-spacing:1px;
 }
 
 .mode-option.active{color:#fff;}
@@ -95,6 +94,29 @@ button{
   margin-top:6px;
   font-size:12px;
   color:#ff9800;
+}
+
+/* CATEGORY FILTER */
+.filter-bar{
+  margin-top:15px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  justify-content:center;
+}
+
+.filter-btn{
+  padding:6px 10px;
+  background:#1a1a1a;
+  border-radius:6px;
+  cursor:pointer;
+  font-size:12px;
+  color:#aaa;
+}
+
+.filter-btn.active{
+  background:#ff9800;
+  color:#fff;
 }
 
 /* SOURCE */
@@ -119,6 +141,17 @@ button{
 <button class="roll" onclick="roll()">🎲 Roll Build</button>
 <button class="guide" onclick="openGuide()">📘 Open Guide</button>
 
+<!-- CATEGORY FILTER -->
+<div class="filter-bar">
+  <div class="filter-btn active" data-cat="All">All</div>
+  <div class="filter-btn" data-cat="Melee">Melee</div>
+  <div class="filter-btn" data-cat="Bow">Bow</div>
+  <div class="filter-btn" data-cat="Spell">Spell</div>
+  <div class="filter-btn" data-cat="DoT">DoT</div>
+  <div class="filter-btn" data-cat="Minion">Minion</div>
+</div>
+
+<!-- MODE TOGGLE -->
 <div class="mode-toggle">
   <div class="mode-slider" id="slider"></div>
   <div class="mode-option active" data-mode="chaos">CHAOS</div>
@@ -132,77 +165,31 @@ button{
 
 <script>
 
-// ================= REAL BUILD DATABASE (3.28 STYLE) =================
+// ================= DATA =================
 const builds = [
-
-  // 🔥 META
-  {
-    skill:"Toxic Rain",
-    asc:"Pathfinder",
-    cat:"DoT",
-    url:"https://www.poe-vault.com/guides/toxic-rain-pathfinder-build-guide"
-  },
-  {
-    skill:"Lightning Arrow",
-    asc:"Deadeye",
-    cat:"Bow",
-    url:"https://mobalytics.gg/poe/builds/lightning-arrow-deadeye"
-  },
-  {
-    skill:"Spark",
-    asc:"Inquisitor",
-    cat:"Spell",
-    url:"https://mobalytics.gg/poe/builds/spark-inquisitor"
-  },
-
-  // 🧠 STRONG
-  {
-    skill:"Righteous Fire",
-    asc:"Inquisitor",
-    cat:"DoT",
-    url:"https://www.poe-vault.com/guides/righteous-fire-inquisitor-build-guide"
-  },
-  {
-    skill:"Summon Skeletons",
-    asc:"Necromancer",
-    cat:"Minion",
-    url:"https://www.poe-vault.com/guides/skeleton-mage-necromancer-build-guide"
-  },
-
-  // ⚔️ MELEE
-  {
-    skill:"Cyclone",
-    asc:"Slayer",
-    cat:"Melee",
-    url:"https://mobalytics.gg/poe/builds/cyclone-slayer"
-  },
-  {
-    skill:"Boneshatter",
-    asc:"Slayer",
-    cat:"Melee",
-    url:"https://mobalytics.gg/poe/builds/boneshatter-slayer"
-  },
-
-  // 🏹 BOW
-  {
-    skill:"Tornado Shot",
-    asc:"Deadeye",
-    cat:"Bow",
-    url:"https://mobalytics.gg/poe/builds/tornado-shot-deadeye"
-  },
-
-  // ☠️ DOT
-  {
-    skill:"Essence Drain",
-    asc:"Occultist",
-    cat:"DoT",
-    url:"https://mobalytics.gg/poe/builds/essence-drain-occultist"
-  }
-
+{skill:"Toxic Rain",asc:"Pathfinder",cat:"DoT",url:"https://www.poe-vault.com/guides/toxic-rain-pathfinder-build-guide"},
+{skill:"Lightning Arrow",asc:"Deadeye",cat:"Bow",url:"https://mobalytics.gg/poe/builds/lightning-arrow-deadeye"},
+{skill:"Spark",asc:"Inquisitor",cat:"Spell",url:"https://mobalytics.gg/poe/builds/spark-inquisitor"},
+{skill:"Righteous Fire",asc:"Inquisitor",cat:"DoT",url:"https://www.poe-vault.com/guides/righteous-fire-inquisitor-build-guide"},
+{skill:"Summon Skeletons",asc:"Necromancer",cat:"Minion",url:"https://www.poe-vault.com/guides/skeleton-mage-necromancer-build-guide"},
+{skill:"Cyclone",asc:"Slayer",cat:"Melee",url:"https://mobalytics.gg/poe/builds/cyclone-slayer"},
+{skill:"Boneshatter",asc:"Slayer",cat:"Melee",url:"https://mobalytics.gg/poe/builds/boneshatter-slayer"},
+{skill:"Tornado Shot",asc:"Deadeye",cat:"Bow",url:"https://mobalytics.gg/poe/builds/tornado-shot-deadeye"},
+{skill:"Essence Drain",asc:"Occultist",cat:"DoT",url:"https://mobalytics.gg/poe/builds/essence-drain-occultist"}
 ];
 
 let current=null;
 let smartMode=false;
+let activeCategory="All";
+
+// ================= FILTER =================
+document.querySelectorAll(".filter-btn").forEach(btn=>{
+  btn.onclick=()=>{
+    document.querySelectorAll(".filter-btn").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    activeCategory=btn.dataset.cat;
+  };
+});
 
 // ================= TOGGLE =================
 const slider=document.getElementById("slider");
@@ -229,20 +216,27 @@ function pick(arr){
   return arr[Math.floor(Math.random()*arr.length)];
 }
 
+function getFilteredBuilds(){
+  if(activeCategory==="All") return builds;
+  return builds.filter(b=>b.cat===activeCategory);
+}
+
 function roll(){
+  let pool=getFilteredBuilds();
+  if(pool.length===0) return;
+
   let build;
 
   if(smartMode){
-    build = pick(builds); // real curated builds
+    build = pick(pool);
   } else {
-    // chaos = mix skill + ascendancy
-    let skills=[...new Set(builds.map(b=>b.skill))];
-    let asc=[...new Set(builds.map(b=>b.asc))];
+    let skills=[...new Set(pool.map(b=>b.skill))];
+    let asc=[...new Set(pool.map(b=>b.asc))];
 
     build={
       skill:pick(skills),
       asc:pick(asc),
-      cat:"Unknown",
+      cat:activeCategory,
       url:"https://www.google.com/search?q=poe+"+pick(skills)+"+build"
     };
   }
