@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>PoE Build Randomizer</title>
+  <style>
+    body {
+      font-family: Arial;
+      text-align: center;
+      background: #111;
+      color: #eee;
+    }
+    h1 { margin-top: 40px; }
+    .box {
+      margin: 20px auto;
+      padding: 20px;
+      width: 300px;
+      border: 1px solid #444;
+      border-radius: 10px;
+      background: #1a1a1a;
+    }
+    .label { font-size: 14px; color: #aaa; }
+    .value { font-size: 22px; margin-top: 5px; }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background: #ff9800;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover { background: #e68900; }
+  </style>
+</head>
+<body>
+
+  <h1>Build Randomizer</h1>
+
+  <div class="box">
+    <div class="label">Skill</div>
+    <div id="skill" class="value">-</div>
+  </div>
+
+  <div class="box">
+    <div class="label">Ascendancy</div>
+    <div id="ascendancy" class="value">-</div>
+  </div>
+
+  <button onclick="randomize()">Roll Build</button>
+
+  <script>
+    const skills = [
+      "Fireball", "Ice Nova", "Lightning Arrow",
+      "Cyclone", "Toxic Rain", "Blade Vortex",
+      "Spark", "Frost Blades"
+    ];
+
+    const ascendancies = [
+      "Necromancer", "Elementalist", "Occultist",
+      "Slayer", "Champion", "Deadeye",
+      "Pathfinder", "Inquisitor"
+    ];
+
+    function pickRandom(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function randomize() {
+      document.getElementById("skill").innerText = pickRandom(skills);
+      document.getElementById("ascendancy").innerText = pickRandom(ascendancies);
+    }
+
+    randomize();
+  </script>
+
+</body>
+</html>
